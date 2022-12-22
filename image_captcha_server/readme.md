@@ -1,4 +1,6 @@
-this server is a simple captcha system that asks the user to classify some animals into elephants, bears, tigers, tapirs and boars
+this server is a simple captcha system that asks the user to classify some animals into elephants, bears, tigers, tapirs and boars.
+
+
 to access the server:
 http://127.0.0.1:30000/
 
