@@ -12,3 +12,7 @@ https://drive.google.com/file/d/1D-CT1QcTOpJ9xE3KomIdCPvdoY-ivGPo/view?usp=shari
 
 the dataset needs to be named 'dataset' and placed in the same directory as image_server.py.
 The original internal directories' order should be maintained
+
+
+original dataset:
+https://universe.roboflow.com/1171203750-student-mmu-edu-my/animal-xpicl
