@@ -1,3 +1,7 @@
+This is a captcha server that contains similiar captchas to the ones used on JUST captchas with the addition of pixel poisoning
+the server runs on http://127.0.0.1:20000 and needs to be running inorder to use the automated bot
+
+
 The model:
 
 https://drive.google.com/file/d/1O4v1-Ljbu7r4OU6PWm2mTs-ipyccKwCJ/view?usp=sharing
