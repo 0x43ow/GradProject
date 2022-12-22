@@ -26,7 +26,7 @@ def get_captcha_images():
     animals = os.listdir('dataset')
 
     #similiar_animals to avoid because they are hard to tell apart even by humans
-    similiar_animals = ['boar','bear','tapir']
+    similiar_animals = ['boar','bear','tapir','elephant']
     while True:
         #forcing the two animals to be different
         animal,wrong_animal = choices(animals,k=2)
@@ -92,13 +92,14 @@ def get_captcha_images():
 
     #instruction.txt is used by the html page to inform the user of which animal they ara supposed to choose    
     text=open('instruction.txt','w')
-    text.write(f'choose all images of that contain: {animal}')
+    text.write(f'choose all images that contain: {animal}')
     text.close()
-    
+
+
     #increment total attempts for analytical purposes
     global total_attempts
     total_attempts+=1
-    return solution
+    return solution.strip()
     
 
 def handler(signum, frame):
@@ -115,7 +116,7 @@ def handler(signum, frame):
     successfull accesses per second:    {round(successfull_accesses/total_time,4)}
     """)
 
-    
+
     f.close()
     print("server closed, written log on LOG.txt")
     exit(1)
@@ -153,21 +154,35 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         elif self.path.find("true") != -1:
             #checking which images were selected by the user
             checked_captchas_field = self.path.split('&')
-            checked_captchas = ""
+            checked_captchas = []
 
             if len(checked_captchas_field) != 0:
                 checked_captchas_field[0] = (checked_captchas_field[0].split('?'))[1]
                 for field in checked_captchas_field:
                     #retrieving the images' numbers
-                    checked_captchas += field[7]
+                    checked_captchas.append(field[7])
                 del checked_captchas_field
+                
 
-                if checked_captchas == solution:
-                    #if the user chose the correct images, display the access page and create a new captcha
+                #checking the user's solution
+                correct_count = len(solution)
+                correct_solution = False
+
+
+                for checked_captcha in checked_captchas:
+                    if checked_captcha in solution:
+                        checked_captchas.remove(checked_captcha)
+                        correct_count-=1
+                    # the server will tolerates choosing one wrong image or missing one correct image.
+                    if correct_count <= 1:
+                        correct_solution = True
+                        break
+                #if the user's solution is accepted, open the access page
+                if correct_solution:
                     self.path = 'access.html'
                     global successfull_accesses
-                    successfull_accesses+=1
                     solution = get_captcha_images()
+
 
                 else:
                     #if the user's solution was wrong, create a new captcha
@@ -181,7 +196,7 @@ signal.signal(signal.SIGINT, handler)
 Handler = MyHttpRequestHandler
 
 #create a captcha on startup
-solution = get_captcha_images()
+#solution = get_captcha_images()
 
 
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
